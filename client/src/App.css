@@ -1,0 +1,11 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+
+#box{
+  width: 1000px;
+  height: 600px;
+}
