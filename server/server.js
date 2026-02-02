@@ -32,10 +32,23 @@ app.get('/room',(req,res)=>{
 })
 
 io.on('connection',socket=>{
-    socket.on('join-room',(roomId,userId)=>{
-        console.log(roomId,userId);
+    socket.on('join-room',(roomId,userId,name)=>{
+        console.log(roomId,userId,name);
         socket.join(roomId);
+        socket.on('mouse-move',(data)=>{
+            console.log('coordinates:',data);
+            socket.to(data.roomId).emit('user-mouse-moved', {
+             userId: socket.id, 
+             x: data.x, 
+             y: data.y,
+             name:name,
+    });
+        })
         socket.to(roomId).emit('user-connected',userId)
+        socket.on('drawing-change', (data) => {
+            // socket.to(roomId) sends to everyone EXCEPT the person who drew it
+            socket.to(data.roomid).emit('drawing-change', data);
+        });
         socket.on('disconnect',()=>{
             socket.to(roomId).emit('user-disconnected',userId)
         })

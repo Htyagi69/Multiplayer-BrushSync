@@ -14,3 +14,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* This forces the cursor to stay as a default pointer if you don't like Tldraw's tool-based cursors */
+.tl-container {
+    cursor: default !important;
+}
