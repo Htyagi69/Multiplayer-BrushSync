@@ -10,7 +10,7 @@ import { io } from 'socket.io-client';
 function MainLayout(){
    const {roomid}=useParams()
       const [cursors, setCursors] = useState({}); // { userId: {x, y} }
-        const socket=useMemo(()=>io('http://localhost:3000'),[]);
+        const socket=useMemo(()=>io('https://multiplayer-brush-sync.vercel.app'),[]);
 
         // --- DRAWING SYNC LOGIC ---
     const handleMount = (editor) => {
