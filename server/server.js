@@ -10,7 +10,11 @@ const httpserver=createServer(app)
 
 app.use(express.json());
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:["http://localhost:5173",
+        "https://multiplayer-brush-sync.vercel.app",
+        "https://multiplayer-brush-sync-git-main-harshiis-projects.vercel.app",
+        "https://multiplayer-brush-sync-5a2cksu4c-harshiis-projects.vercel.app"
+    ],
 }))
 
 const peerServer=new PeerServer({
