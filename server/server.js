@@ -3,7 +3,7 @@ import {createServer} from 'http'
 import express from "express";
 import {v4 as uuidv4} from 'uuid'
 import cors from'cors'
-import {PeerServer} from 'peer'
+import {ExpressPeerServer} from 'peer'
 
 const app=express();
 const httpserver=createServer(app)
@@ -17,11 +17,11 @@ app.use(cors({
     ],
 }))
 
-const peerServer=new PeerServer({
-    port:3001,
-    path:'/peerjs',
-    allow_discovery:true
-})
+// --- COMBINE PEERJS WITH EXPRESS ---
+const peerServer = ExpressPeerServer(httpserver, {
+    debug: true,
+    path: '/' 
+});
 console.log(`Peerjs is running at port 3001`);
 
 const io=new  Server(httpserver,{
