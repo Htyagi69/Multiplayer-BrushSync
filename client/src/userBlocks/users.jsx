@@ -25,7 +25,7 @@ function Users({socket}) {
 
      useEffect(()=>{
         const peer=new Peer(undefined,{
-           host:'https://multiplayer-brushsync-1.onrender.com',
+           host:'multiplayer-brushsync-1.onrender.com',
            path:'/peerjs',
            port:443,
            secure:true,
