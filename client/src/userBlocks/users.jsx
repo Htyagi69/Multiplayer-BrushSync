@@ -81,6 +81,7 @@ function Users({socket}) {
             peer.destroy();
             socket.off('user-connected') 
             socket.off('user-disconnected') 
+            socket.off('user-mouse-moved'); 
         }
     },[socket,roomid,name])
 
