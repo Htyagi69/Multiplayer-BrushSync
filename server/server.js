@@ -26,11 +26,13 @@ console.log(`Peerjs is running at port 3001`);
 // This is the "door" the frontend knocks on
 app.use('/peerjs', peerServer);
 
-const io=new  Server(httpserver,{
-    cors:{
-        origin:"*",
-    }
-})
+const io = new Server(httpserver, {
+    cors: {
+        origin: "*", 
+        methods: ["GET", "POST"]
+    },
+    transports: ['websocket', 'polling'] // Helps with the WebSocket failure
+});
 
 app.get('/',(req,res)=>{
     return res.json({message:"Hello from Server"})
