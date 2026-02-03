@@ -62,7 +62,7 @@ io.on('connection',socket=>{
         })
     })
 })
-httpserver.listen(3000,()=>{
-    console.log(`Server is listening at http://localhost:3000`);
-     
-})
+const PORT = process.env.PORT || 3000;
+httpserver.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+});
