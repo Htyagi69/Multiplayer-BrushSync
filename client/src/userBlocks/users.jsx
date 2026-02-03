@@ -114,7 +114,7 @@ function Users({socket}) {
 
     async function roomCreation(){
         if(!roomid){
-        const response=await fetch('https://multiplayer-brush-sync.vercel.app/room',{
+        const response=await fetch('https://multiplayer-brushsync.onrender.com/room',{
             method:'GET',
         })
         const res = await response.json(); 
