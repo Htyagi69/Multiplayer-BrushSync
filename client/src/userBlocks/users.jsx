@@ -25,7 +25,7 @@ function Users({socket}) {
 
      useEffect(()=>{
         const peer=new Peer(undefined,{
-           host:'https://multiplayer-brushsync.onrender.com',
+           host:'https://multiplayer-brushsync-1.onrender.com',
            path:'/peerjs',
            port:443,
            secure:true,
@@ -115,7 +115,7 @@ function Users({socket}) {
 
     async function roomCreation(){
         if(!roomid){
-        const response=await fetch('https://multiplayer-brushsync.onrender.com/room',{
+        const response=await fetch('https://multiplayer-brushsync-1.onrender.com/room',{
             method:'GET',
         })
         const res = await response.json(); 
