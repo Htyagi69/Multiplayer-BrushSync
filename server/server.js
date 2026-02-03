@@ -30,7 +30,9 @@ const io=new  Server(httpserver,{
     }
 })
 
-
+app.get('/',(req,res)=>{
+    return res.json({message:"Hello from Server"})
+})
 app.get('/room',(req,res)=>{
     return res.json({roomId:`${uuidv4()}`})
 })
