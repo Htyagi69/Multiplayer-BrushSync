@@ -23,6 +23,8 @@ const peerServer = ExpressPeerServer(httpserver, {
     path: '/' 
 });
 console.log(`Peerjs is running at port 3001`);
+// This is the "door" the frontend knocks on
+app.use('/peerjs', peerServer);
 
 const io=new  Server(httpserver,{
     cors:{
