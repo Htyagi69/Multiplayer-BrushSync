@@ -18,7 +18,7 @@ function Users({socket}) {
     const [state,setState]=useState(false);
     let [name,setName]=useState('User123')
     
-    const BASE_LINK='http://localhost:5173/'
+    const BASE_LINK='https://multiplayer-brush-sync.vercel.app/'
 
     // We use a ref for the peer instance so it persists across renders correctly
      const peers=useRef({})
@@ -114,7 +114,7 @@ function Users({socket}) {
 
     async function roomCreation(){
         if(!roomid){
-        const response=await fetch('http://localhost:3000/room',{
+        const response=await fetch('https://multiplayer-brush-sync.vercel.app/room',{
             method:'GET',
         })
         const res = await response.json(); 
