@@ -13,6 +13,7 @@ function MainLayout(){
        const socket = useMemo(() => io('https://multiplayer-brushsync-1.onrender.com', {
     transports: ['polling', 'websocket'], // Start with polling, then upgrade
     withCredentials: true,
+    reconnection: true,
     reconnectionAttempts: 5,
 }), []);
 
