@@ -43,29 +43,44 @@ app.get('/room',(req,res)=>{
     return res.json({roomId:`${uuidv4()}`})
 })
 
-io.on('connection',socket=>{
-    socket.on('join-room',(roomId,userId,name)=>{
-        console.log(roomId,userId,name);
+io.on('connection', socket => {
+    // We use a variable to store the roomId for this specific socket
+    let currentRoomId = null;
+
+    socket.on('join-room', (roomId, userId, name) => {
+        currentRoomId = roomId; // Save it here
         socket.join(roomId);
-        socket.on('mouse-move',(data)=>{
-            console.log('coordinates:',data);
-            socket.to(roomId).emit('user-mouse-moved', {
-             userId: socket.id, 
-             x: data.x, 
-             y: data.y,
-             name:name,
+        console.log(`User ${name} joined ${roomId}`);
+        
+        // Notify others
+        socket.to(roomId).emit('user-connected', userId);
     });
-        })
-        socket.to(roomId).emit('user-connected',userId)
-        socket.on('drawing-change', (data) => {
-            // socket.to(roomId) sends to everyone EXCEPT the person who drew it
-            socket.to(roomId).emit('drawing-change', data);
-        });
-        socket.on('disconnect',()=>{
-            socket.to(roomId).emit('user-disconnected',userId)
-        })
-    })
-})
+
+    // Move these OUTSIDE join-room but INSIDE connection
+    socket.on('mouse-move', (data) => {
+        if (currentRoomId) {
+            socket.to(currentRoomId).emit('user-mouse-moved', {
+                userId: socket.id, 
+                x: data.x, 
+                y: data.y,
+                name: data.name,
+            });
+        }
+    });
+
+    socket.on('drawing-change', (data) => {
+        if (currentRoomId) {
+            socket.to(currentRoomId).emit('drawing-change', data);
+        }
+    });
+
+    socket.on('disconnect', () => {
+        if (currentRoomId) {
+            // userId needs to be tracked or passed here
+            socket.to(currentRoomId).emit('user-disconnected', socket.id);
+        }
+    });
+});
 const PORT = process.env.PORT || 3000;
 httpserver.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
