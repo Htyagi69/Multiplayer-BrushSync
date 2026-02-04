@@ -28,10 +28,12 @@ app.use('/peerjs', peerServer);
 
 const io = new Server(httpserver, {
     cors: {
-        origin: "*", 
-        methods: ["GET", "POST"]
+        // Replace "*" with your actual Vercel URL
+        origin: "https://multiplayer-brush-sync.vercel.app", 
+        methods: ["GET", "POST"],
+        credentials: true
     },
-    transports: ['websocket', 'polling'] // Helps with the WebSocket failure
+    transports: ['polling', 'websocket']
 });
 
 app.get('/',(req,res)=>{
