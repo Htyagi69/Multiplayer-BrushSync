@@ -7,7 +7,7 @@ function VideoStream({stream}) {
         if(VideoRef.current) VideoRef.current.srcObject=stream;
     },[stream])
     return (
-        <div className=' w-30 h-30 rounded-2xl text-amber-300 border-4'>
+        <div className=' w-70 h-67 rounded-2xl text-amber-300 border-4'>
              <video 
                     ref={VideoRef} 
                     autoPlay 
