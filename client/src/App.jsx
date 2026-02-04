@@ -10,10 +10,11 @@ import { io } from 'socket.io-client';
 function MainLayout(){
    const {roomid}=useParams()
       const [cursors, setCursors] = useState({}); // { userId: {x, y} }
-        const socket=useMemo(()=>io('https://multiplayer-brushsync-1.onrender.com',{
-        transports: ['websocket', 'polling'], // Fallback to polling if wss fails
-    withCredentials: true
-        }),[]);
+       const socket = useMemo(() => io('https://multiplayer-brushsync-1.onrender.com', {
+    transports: ['polling', 'websocket'], // Start with polling, then upgrade
+    withCredentials: true,
+    reconnectionAttempts: 5,
+}), []);
 
         // --- DRAWING SYNC LOGIC ---
     const handleMount = (editor) => {
