@@ -49,7 +49,7 @@ io.on('connection',socket=>{
         socket.join(roomId);
         socket.on('mouse-move',(data)=>{
             console.log('coordinates:',data);
-            socket.to(data.roomId).emit('user-mouse-moved', {
+            socket.to(roomId).emit('user-mouse-moved', {
              userId: socket.id, 
              x: data.x, 
              y: data.y,
@@ -59,7 +59,7 @@ io.on('connection',socket=>{
         socket.to(roomId).emit('user-connected',userId)
         socket.on('drawing-change', (data) => {
             // socket.to(roomId) sends to everyone EXCEPT the person who drew it
-            socket.to(data.roomid).emit('drawing-change', data);
+            socket.to(roomid).emit('drawing-change', data);
         });
         socket.on('disconnect',()=>{
             socket.to(roomId).emit('user-disconnected',userId)
