@@ -91,7 +91,7 @@ function MainLayout(){
         </div>
 
         {/* TLDRAW BOARD */}
-       <Tldraw onMount={handleMount} autoFocus />
+       <Tldraw licenseKey={import.meta.env.VITE_TLDRAW_LICENSE_KEY} onMount={handleMount} autoFocus />
       </div>
 
       {/* Sidebar Area */}
