@@ -17,28 +17,29 @@ function MainLayout(){
     reconnectionAttempts: 5,
 }), []);
 
-        // --- DRAWING SYNC LOGIC ---
-    const handleMount = (editor) => {
-        // 1. Send your drawings to others
-        editor.store.listen((event) => {
-            // Only sync if the change came from the user (not a remote update)
-            if (event.source !== 'user') return;
-
-            socket.emit('drawing-change', {
-                roomid,
-                changes: event.changes,
-            });
+const handleMount = (editor) => {
+    // 1. Send drawings
+    const unlisten = editor.store.listen((event) => {
+        if (event.source !== 'user') return;
+        socket.emit('drawing-change', {
+            roomid, // Make sure this matches your backend variable name (roomid vs roomId)
+            changes: event.changes,
         });
+    });
 
-        // 2. Receive drawings from others
-        socket.on('drawing-change', (data) => {
-            // Apply the remote changes to your local board
-            editor.store.mergeRemoteChanges(() => {
-                editor.store.applyDiff(data.changes);
-            });
+    // 2. Receive drawings
+    socket.on('drawing-change', (data) => {
+        editor.store.mergeRemoteChanges(() => {
+            editor.store.applyDiff(data.changes);
         });
+    });
+
+    // Clean up when component unmounts
+    return () => {
+        unlisten();
+        socket.off('drawing-change');
     };
-
+};
        useEffect(()=>{
               function handleMouseMove(e){
                   const x=e.clientX/window.innerWidth;
