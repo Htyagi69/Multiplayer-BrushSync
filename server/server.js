@@ -59,7 +59,7 @@ io.on('connection',socket=>{
         socket.to(roomId).emit('user-connected',userId)
         socket.on('drawing-change', (data) => {
             // socket.to(roomId) sends to everyone EXCEPT the person who drew it
-            socket.to(roomid).emit('drawing-change', data);
+            socket.to(roomId).emit('drawing-change', data);
         });
         socket.on('disconnect',()=>{
             socket.to(roomId).emit('user-disconnected',userId)
