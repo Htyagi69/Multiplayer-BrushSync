@@ -83,7 +83,7 @@ function Users({socket}) {
             socket.off('user-disconnected') 
             socket.off('user-mouse-moved'); 
         }
-    },[socket,roomid,name])
+    },[roomid,name])
 
     useEffect(()=>{
         function handleMouseMove(e){
