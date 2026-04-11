@@ -10,7 +10,7 @@ import { auth } from "./lib/auth.js";
 const app=express();
 const httpserver=createServer(app)
 
-app.use(express.json());
+app.set("trust proxy", 1);
 app.use(cors({
     origin:["https://multiplayer-brush-sync.vercel.app",
         "https://multiplayer-brush-sync-git-main-harshiis-projects.vercel.app",
@@ -21,6 +21,10 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
+
+app.all("/api/auth/*path", toNodeHandler(auth));
+
+app.use(express.json());
 
 // --- COMBINE PEERJS WITH EXPRESS ---
 const peerServer = ExpressPeerServer(httpserver, {
@@ -86,10 +90,6 @@ io.on('connection', socket => {
         }
     });
 });
-app.set("trust proxy", 1);
-app.all("/api/auth/*path", toNodeHandler(auth));
-
-app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 httpserver.listen(PORT, () => {
