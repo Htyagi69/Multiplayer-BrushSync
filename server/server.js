@@ -86,7 +86,7 @@ io.on('connection', socket => {
         }
     });
 });
-
+app.set("trust proxy", 1);
 app.all("/api/auth/*path", toNodeHandler(auth));
 
 app.use(express.json());
