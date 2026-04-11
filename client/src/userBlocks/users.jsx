@@ -5,8 +5,14 @@ import { useMemo } from 'react';
 import { useRef } from 'react';
 import {Peer} from 'peerjs'
 import VideoStream from './VideoStream';
+import { User,LogOut } from 'lucide-react';
+import { authClient } from '../lib/auth-client';
+import { UserProfile } from '../components/logout';
+import { toast } from 'sonner';
 
 function Users({socket}) {
+    const {data:session}=authClient.useSession();
+    const user=session?.user;
     const navigate=useNavigate()
     const {roomid}=useParams()
     // const socket=useMemo(()=>io('http://localhost:3000'),[]);
@@ -120,6 +126,7 @@ function Users({socket}) {
             method:'GET',
         })
         const res = await response.json(); 
+         toast.success("Share this link")
         let  Room_ID=res.roomId;
         console.log("Rommid:",Room_ID);
         setState(true);
@@ -142,7 +149,7 @@ function Users({socket}) {
     }
 
     return (
-        <div className="relative w-screen h-screen overflow-hidden">
+        <div className="relative w-65  h-auto overflow-hidden">
         {Object.entries(cursors).map(([id, pos]) => (
             <div
                 key={id}
@@ -160,15 +167,16 @@ function Users({socket}) {
                 }}
             />
         ))}
-            <button onClick={roomCreation} className="p-4 bg-blue-500 text-white rounded-2xl">
+        <div className='flex gap-2 justify-between'>
+            <button onClick={roomCreation} className="p-1 bg-blue-500 text-white rounded-sm text-sm">
                 {state ? `Invite your friends` : `Create and Join Room`}
                 <br/>
-                   {state? `(you got the link)`:``}
             </button>
 
-        <input type='text' id='naam' value={name}  onChange={(e)=>handleName(e)} className='text-black'/>
+           <UserProfile user={user}/>
+        </div>
 
-        <div className=' w-67 h-56 rounded-2xl text-amber-300  '>
+        <div className=' w-60 h-56 rounded-2xl text-amber-300  '>
            {/* 3. The video tag MUST have autoPlay and muted (for local) */}
                 <video 
                     ref={myVideoRef} 
@@ -184,7 +192,7 @@ function Users({socket}) {
         ))
          }
     </div>
-        </div>
+    </div>
     )
 }
 

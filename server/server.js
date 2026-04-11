@@ -4,6 +4,8 @@ import express from "express";
 import {v4 as uuidv4} from 'uuid'
 import cors from'cors'
 import {ExpressPeerServer} from 'peer'
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth.js";
 
 const app=express();
 const httpserver=createServer(app)
@@ -15,6 +17,9 @@ app.use(cors({
         "https://multiplayer-brush-sync-5a2cksu4c-harshiis-projects.vercel.app",
         "http://localhost:5173",
     ],
+    credentials:true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
 // --- COMBINE PEERJS WITH EXPRESS ---
@@ -81,6 +86,11 @@ io.on('connection', socket => {
         }
     });
 });
+
+app.all("/api/auth/*path", toNodeHandler(auth));
+
+app.use(express.json());
+
 const PORT = process.env.PORT || 3000;
 httpserver.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
