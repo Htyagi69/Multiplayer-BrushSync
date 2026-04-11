@@ -3,7 +3,7 @@ import LoginPage from './Login'
 import SignupPage from './Signup'
 
 export default function AuthPages() {
-  const [page, setPage] = useState("signup");
+  const [page, setPage] = useState("login");
   
 
   return page === "signup"
