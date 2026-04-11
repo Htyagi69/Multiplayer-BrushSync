@@ -6,7 +6,9 @@ import { toast } from 'sonner';
 export const UserProfile = ({ user}) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
-
+  
+ if (!user) return null;
+  
   const onLogout=async()=>{
       await authClient.signOut({
         fetchOptions:{
