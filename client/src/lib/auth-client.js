@@ -1,10 +1,9 @@
 import { createAuthClient } from "better-auth/react"
-
 export const authClient = createAuthClient({
-  baseURL: import.meta.env.PROD 
-    ? "https://multiplayer-brush-sync.vercel.app/api/auth"                       // production - Vercel proxy
-    : "http://localhost:3000/api/auth",  // local dev
-  fetchOptions: {
-    credentials: 'include',
-  }
+    /** The base URL of the server (optional if you're using the same domain) */
+    // baseURL: "http://localhost:3000/api/auth",
+    baseURL: "https://multiplayer-brushsync-1.onrender.com/api/auth",
+    fetchOptions:{
+        credentials:'include'
+    }
 })
