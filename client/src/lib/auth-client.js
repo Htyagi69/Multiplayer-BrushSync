@@ -4,6 +4,6 @@ export const authClient = createAuthClient({
     // baseURL: "http://localhost:3000/api/auth",
     baseURL: "https://multiplayer-brushsync-1.onrender.com/api/auth",
     fetchOptions:{
-        credentials:'true'
+        credentials:'include'
     }
 })
