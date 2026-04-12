@@ -7,6 +7,9 @@ import { Toaster } from 'sonner';
 
 function App() { 
         const {data:session,isPending}=authClient.useSession();
+        console.log("Session:", session);
+    console.log("Is Pending:", isPending);
+    console.log("Error:", error);
         if(isPending) return <div>Loading...</div>
   return(
   <BrowserRouter>
