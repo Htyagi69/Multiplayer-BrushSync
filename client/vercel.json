@@ -1,4 +1,6 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/api/auth/:path*", "destination": "https://multiplayer-brushsync-1.onrender.com/api/auth/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
-
