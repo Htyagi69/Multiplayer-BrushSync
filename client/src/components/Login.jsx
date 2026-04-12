@@ -21,33 +21,26 @@ const LoginPage = ({ onSwitch }) => {
          */
         rememberMe: false
 },{
-  onSuccess: () => {
-  toast.success("Welcome!");
-},
-onError:()=>{
-  toast.error("Something went wrong")
-}
+     onSuccess: () => {
+            toast.success("Welcome!");
+            window.location.href = "/"; 
+        },
+        onError: (ctx) => {
+            toast.error(ctx.error.message || "Something went wrong");
+        }
 })
-if(data) toast.success("Welcome!");
-    // console.log("data",data);
-    if(error)  console.log("err",error);
   }
 const handleGoogleAuth=async()=>{
-    const { data, error } = await authClient.signIn.social({
+  try{
+    await authClient.signIn.social({
     provider: "google",
     callbackURL: "https://multiplayer-brush-sync.vercel.app", 
     errorCallbackURL: "https://multiplayer-brush-sync.vercel.app/error",
     newUserCallbackURL: "https://multiplayer-brush-sync.vercel.app",
-},{
-   onSuccess:()=>{
-    toast.success("Welcome to BrushSync")
-  },
-  onError:()=>{
-    toast.error("Something went wrong")
-  }
-});
-    console.log("data",data);
-    if(error)  console.log("err",error);
+})
+  }catch (e) {
+        toast.error("Failed to initiate Google login");
+    }
 }
 
   return (
