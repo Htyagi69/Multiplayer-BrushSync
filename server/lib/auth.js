@@ -19,7 +19,8 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
     }, 
   },
-  trustedOrigins:["http://localhost:5173","https://multiplayer-brush-sync.vercel.app"],
+    baseURL: "https://multiplayer-brush-sync.vercel.app",
+  trustedOrigins:["https://multiplayer-brush-sync.vercel.app"],
      advanced: {
     defaultCookieAttributes: {
       sameSite: "none",
