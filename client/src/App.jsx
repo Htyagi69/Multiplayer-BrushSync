@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard';
 import { Toaster } from 'sonner';
 
 function App() { 
-        const {data:session,isPending}=authClient.useSession();
+        const {data:session,isPending,error}=authClient.useSession();
         console.log("Session:", session);
     console.log("Is Pending:", isPending);
     console.log("Error:", error);
