@@ -30,5 +30,9 @@ export const auth = betterAuth({
       enabled: false,
     },
     useSecureCookies: true,
+  },
+   account: {
+    // Keep this to fix the state_mismatch across different domains
+    skipStateCookieCheck: true, 
   }
 });
