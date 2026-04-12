@@ -26,35 +26,25 @@ const SignupPage = ({ onSwitch }) => {
             console.log("Successfully done",ctx);
         },
         onError: (ctx) => {
-            alert(ctx.error.message);
+            toast.error(ctx.error.message);
         },
-    },{
-        onError:()=>{
-          toast.error("Something went wrong")
-        }
     });
     console.log("data",data);
     if(error)  console.log("err",error);
 }
 
 const handleGoogleAuth=async()=>{
-    const { data, error } = await authClient.signIn.social({
+  try{
+    await authClient.signIn.social({
     provider: "google",
     callbackURL: "https://multiplayer-brush-sync.vercel.app", 
     errorCallbackURL: "https://multiplayer-brush-sync.vercel.app/error",
     newUserCallbackURL: "https://multiplayer-brush-sync.vercel.app",
-},{
-   onSuccess:()=>{
-    toast.success("Welcome to BrushSync")
-  },
-  onError:()=>{
-    toast.error("Something went wrong")
-  }
-});
-    // console.log("data",data);
-    if(error)  console.log("err",error);
+})
+  }catch (e) {
+        toast.error("Failed to initiate Google login");
+    }
 }
-
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-10 font-sans">
       <div className="w-full max-w-md bg-white rounded-2xl border border-stone-200 shadow-sm px-9 py-10 animate-[fadeUp_0.35s_ease_both]">
