@@ -19,20 +19,21 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
     }, 
   },
-  trustedOrigins:["https://multiplayer-brush-sync.vercel.app"],
-     advanced: {
-    defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
-      partitioned: true,
-    },
-    crossSubdomainCookies: {
-      enabled: false,
-    },
-    useSecureCookies: true,
-  },
-   account: {
-    // Keep this to fix the state_mismatch across different domains
-    skipStateCookieCheck: true, 
-  }
+  trustedOrigins:[process.env.CLIENT_URL],
+  // // trustedOrigins:["https://multiplayer-brush-sync.vercel.app"],
+  //    advanced: {
+  //   defaultCookieAttributes: {
+  //     sameSite: "none",
+  //     secure: true,
+  //     partitioned: true,
+  //   },
+  //   crossSubdomainCookies: {
+  //     enabled: false,
+  //   },
+  //   useSecureCookies: true,
+  // },
+  //  account: {
+  //   // Keep this to fix the state_mismatch across different domains
+  //   skipStateCookieCheck: true, 
+  // }
 });
