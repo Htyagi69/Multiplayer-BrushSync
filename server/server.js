@@ -19,7 +19,7 @@ app.use(cors({
     ],
     credentials:true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['set-cookie']
 }))
 
@@ -38,8 +38,7 @@ app.use('/peerjs', peerServer);
 
 const io = new Server(httpserver, {
     cors: {
-        // Replace "*" with your actual Vercel URL
-        origin: "https://multiplayer-brush-sync.vercel.app", 
+        origin: process.env.CLIENT_URL, 
         methods: ["GET", "POST"],
         credentials: true
     },

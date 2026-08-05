@@ -24,17 +24,17 @@ function Users({socket}) {
     const [state,setState]=useState(false);
     let [name,setName]=useState('User123')
     
-    const BASE_LINK='https://multiplayer-brush-sync.vercel.app/'
+    const BASE_LINK=import.meta.env.VITE_CLIENT_URL
 
     // We use a ref for the peer instance so it persists across renders correctly
      const peers=useRef({})
 
      useEffect(()=>{
         const peer=new Peer(undefined,{
-           host:'multiplayer-brushsync-1.onrender.com',
+           host:import.meta.env.VITE_PEER_HOST_URL,
            path:'/peerjs',
-           port:443,
-           secure:true,
+           port:import.meta.env.VITE_PEER_PORT,
+           secure:false,
         })
 
       peer.on('open',(id)=>{
@@ -122,15 +122,16 @@ function Users({socket}) {
 
     async function roomCreation(){
         if(!roomid){
-        const response=await fetch('https://multiplayer-brushsync-1.onrender.com/room',{
+        const response=await fetch(`${import.meta.env.VITE_SERVER_URL}/room`,{
             method:'GET',
         })
         const res = await response.json(); 
+
          toast.success("Share this link")
         let  Room_ID=res.roomId;
         console.log("Rommid:",Room_ID);
         setState(true);
-        await  LinkofMeet(`${BASE_LINK}${Room_ID}`) 
+        await  LinkofMeet(`${BASE_LINK}/${Room_ID}`) 
          navigate(`/${Room_ID}`)
     }
     }
