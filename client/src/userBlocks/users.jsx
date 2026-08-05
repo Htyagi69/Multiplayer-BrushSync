@@ -34,7 +34,7 @@ function Users({socket}) {
            host:import.meta.env.VITE_PEER_HOST_URL,
            path:'/peerjs',
            port:import.meta.env.VITE_PEER_PORT,
-           secure:false,
+           secure:true,
         })
 
       peer.on('open',(id)=>{
