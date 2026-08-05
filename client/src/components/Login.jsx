@@ -13,8 +13,7 @@ const LoginPage = ({ onSwitch }) => {
     const { data, error } = await authClient.signIn.email({
         email:form.email,
         password:form.password,
-        // callbackURL: "http://localhost:5173", 
-       callbackURL: "https://multiplayer-brush-sync.vercel.app", // A URL to redirect to after the user verifies their email (optional)
+       callbackURL: import.meta.env.VITE_CLIENT_URL, // A URL to redirect to after the user verifies their email (optional)
         /**
          * remember the user session after the browser is closed. 
          * @default true
@@ -34,9 +33,9 @@ const handleGoogleAuth=async()=>{
   try{
     await authClient.signIn.social({
     provider: "google",
-    callbackURL: "https://multiplayer-brush-sync.vercel.app", 
-    errorCallbackURL: "https://multiplayer-brush-sync.vercel.app/error",
-    newUserCallbackURL: "https://multiplayer-brush-sync.vercel.app",
+    callbackURL: import.meta.env.VITE_CLIENT_URL,
+    errorCallbackURL: `${import.meta.env.VITE_CLIENT_URL}/error`,
+    newUserCallbackURL: import.meta.env.VITE_CLIENT_URL,
 })
   }catch (e) {
         toast.error("Failed to initiate Google login");
