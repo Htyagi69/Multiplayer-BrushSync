@@ -14,8 +14,7 @@ const SignupPage = ({ onSwitch }) => {
           email:form.email, // user email address
           password:form.password, 
           name:form.name, // user display name
-          // callbackURL: "http://localhost:5173" // A URL to redirect to after the user verifies their email (optional)
-          callbackURL: "https://multiplayer-brush-sync.vercel.app" // A URL to redirect to after the user verifies their email (optional)
+          callbackURL: import.meta.env.VITE_CLIENT_URL // A URL to redirect to after the user verifies their email (optional)
         }, {
         onRequest: (ctx) => {
             console.log("Loading",ctx);
@@ -37,9 +36,9 @@ const handleGoogleAuth=async()=>{
   try{
     await authClient.signIn.social({
     provider: "google",
-    callbackURL: "https://multiplayer-brush-sync.vercel.app", 
-    errorCallbackURL: "https://multiplayer-brush-sync.vercel.app/error",
-    newUserCallbackURL: "https://multiplayer-brush-sync.vercel.app",
+    callbackURL: import.meta.env.VITE_CLIENT_URL, 
+    errorCallbackURL: `${import.meta.env.VITE_CLIENT_URL}/error`,
+    newUserCallbackURL: import.meta.env.VITE_CLIENT_URL,
 })
   }catch (e) {
         toast.error("Failed to initiate Google login");
