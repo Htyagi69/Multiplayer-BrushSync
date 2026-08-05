@@ -9,12 +9,13 @@ import Users from '../userBlocks/users';
 function Dashboard(){
    const {roomid}=useParams()
       const [cursors, setCursors] = useState({}); // { userId: {x, y} }
-       const socket = useMemo(() => io('https://multiplayer-brushsync-1.onrender.com', {
+       const socket = useMemo(() => io(import.meta.env.VITE_SERVER_URL, {
     transports: ['polling', 'websocket'], // Start with polling, then upgrade
     withCredentials: true,
     reconnection: true,
     reconnectionAttempts: 5,
 }), []);
+
 
 const handleMount = (editor) => {
     // 1. Send drawings
