@@ -89,6 +89,13 @@ io.on('connection', socket => {
             socket.to(currentRoomId).emit('user-disconnected', socket.id);
         }
     });
+
+    socket.on('presentation-start',({roomId,presenter})=>{
+        socket.to(roomId).emit('presentation-start',presenter)
+    })
+    socket.on('presentation-stop',(roomId)=>{
+        socket.to(roomId).emit('presentation-stop')
+    })
 });
 
 const PORT = process.env.PORT || 3000;
