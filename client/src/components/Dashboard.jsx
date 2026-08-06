@@ -11,7 +11,7 @@ function Dashboard(){
    const {roomid}=useParams()
       const [cursors, setCursors] = useState({}); // { userId: {x, y} }
       const [sidebarOpen, setSidebarOpen] = useState(true);
-      const [whiteboardOpen, setWhiteboardOpen] = useState(true);
+      const [whiteboardOpen, setWhiteboardOpen] = useState(false);
        const socket = useMemo(() => io(import.meta.env.VITE_SERVER_URL, {
     transports: ['polling', 'websocket'], // Start with polling, then upgrade
     withCredentials: true,
