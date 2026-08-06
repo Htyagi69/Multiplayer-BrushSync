@@ -213,7 +213,7 @@ function Users({socket, fullscreen}) {
                 presenter===peerId.current?remoteStreams:remoteStreams.filter(s=>s.id!==presenter)
     const isPresentationMode=presenter!==null
     return (
-        <div className="relative w-full h-full flex flex-col overflow-hidden">
+        <div className="relative w-full h-full flex flex-col ">
 
         {/* Cursor dots (kept as-is) */}
         {Object.entries(cursors).map(([id, pos]) => (
@@ -247,11 +247,11 @@ function Users({socket, fullscreen}) {
                      <VideoStream  stream={presenterStream} name="Host" isPresentationMode={isPresentationMode}/>
                  </div>
                  <div className="flex gap-2 overflow-x-auto">
-                    {others.map(user => (
-                        <div key={user.id} className="w-56">
+                    {others.map(User => (
+                        <div key={User.id} className="w-80">
                              <VideoStream
-                                  stream={user.stream}
-                                   name={user.id}
+                                  stream={User.stream}
+                                   name={user.name}
                                 />
                           </div>
                          ))}

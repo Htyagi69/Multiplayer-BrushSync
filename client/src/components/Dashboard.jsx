@@ -154,7 +154,7 @@ const handleMount = (editor) => {
                         <h2 className="text-sm font-semibold text-slate-800 tracking-wide">Collaborators</h2>
                     </div>
 
-                    <div className={`flex-1 overflow-y-auto p-4 ${whiteboardOpen ? '' : 'max-w-3xl mx-auto w-full'}`}>
+                    <div className={`flex-1 overflow-y-auto p-4  ${whiteboardOpen ? '' : 'max-w-3xl mx-auto w-full'}`}>
                         <Users socket={socket} fullscreen={!whiteboardOpen} />
                     </div>
                 </div>
