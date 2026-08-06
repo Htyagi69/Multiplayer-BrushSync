@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRef } from 'react';
 import { Mic, MicOff, Video, VideoOff, X, Maximize, Minimize } from 'lucide-react';
 
-function VideoStream({ stream, onClose }) {
+function VideoStream({name, stream, onClose ,isPresentationMode}) {
     const VideoRef = useRef();
     const containerRef = useRef();
     const [videoOn, setVideoOn] = useState(true);
@@ -57,9 +57,13 @@ function VideoStream({ stream, onClose }) {
     <video
         ref={VideoRef} // or videoRef for MyVideoTile
         autoPlay
+        // style={{ transform: 'scaleX(-1)' }} 
         className={isFullscreen ? 'w-full h-full object-contain' : 'w-full h-full object-cover'}
+        style={{transform:isPresentationMode? 'scaleX(1)':'scaleX(-1)' }} 
     />
-
+          <span className="absolute bottom-1.5 left-1.5 text-[10px] font-semibold text-white bg-black/50 px-1.5 py-0.5 rounded">
+                {name}
+            </span>
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 bg-black/50 px-3 py-1.5 rounded-full">
                 <button onClick={toggleAudio} className="text-white hover:text-amber-300">
                     {audioOn ? <Mic size={18} /> : <MicOff size={18} />}
