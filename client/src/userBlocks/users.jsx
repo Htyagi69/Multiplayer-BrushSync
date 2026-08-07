@@ -7,6 +7,8 @@ import { authClient } from '../lib/auth-client';
 import { UserProfile } from '../components/logout';
 import { toast } from 'sonner';
 import { MyVideoTile } from './MyVideoTile';
+import { createBackgroundStream } from './virtualBackground';
+import Background from './background';
 
 
 function Users({socket, fullscreen}) {
@@ -22,7 +24,10 @@ function Users({socket, fullscreen}) {
     // State to keep track of all remote streams
     const [remoteStreams,setRemoteStreams]=useState([]);
     const [state,setState]=useState(false);
-    let [name,setName]=useState('User123')
+    const [bgChange,setBgChange]=useState(false)
+    const [name,setName]=useState('User123')
+    const [bgBox,setBgBox]=useState(false)
+    const backgroundId=useRef(null)
     
     const BASE_LINK=import.meta.env.VITE_CLIENT_URL
 
@@ -38,8 +43,10 @@ function Users({socket, fullscreen}) {
             video:true,
             audio:true,
         })
-        currentStreamRef.current=screen
+
+        currentStreamRef.current = screen;
         setmyStream(screen)
+
         const screenTrack=screen.getVideoTracks()[0];
         Object.values(peers.current).forEach((call)=>{
             if(!call.peerConnection){
@@ -49,10 +56,12 @@ function Users({socket, fullscreen}) {
             const sender=call.peerConnection.getSenders().find((s)=>s.track?.kind==="video");
             sender?.replaceTrack(screenTrack)
         })
+
         socket.emit('presentation-start',{
             roomId:roomid,
             presenter:peerId.current
-        })
+        }) 
+
         screenTrack.onended=()=>{
             socket.emit('presentation-stop',roomid)
             setPresenter(null)
@@ -67,6 +76,34 @@ function Users({socket, fullscreen}) {
         }
      }
      
+     const BackgroundChange=async()=>{
+
+       const camera= cameraStreamRef.current;
+           if (!camera) {
+        console.log("Camera stream is not ready");
+        return;
+        }
+        console.log("Image",backgroundId.current);
+        
+        const processStream=await createBackgroundStream(camera,backgroundId);
+        currentStreamRef.current = processStream;
+        setmyStream(processStream)
+
+        const screenTrack=processStream.getVideoTracks()[0];
+        Object.values(peers.current).forEach((call)=>{
+            if(!call.peerConnection){
+                console.log("peerConnection is not Ready");
+                return;
+            }
+            const sender=call.peerConnection.getSenders().find((s)=>s.track?.kind==="video");
+            sender?.replaceTrack(screenTrack)
+        })
+     }
+     
+    useEffect(()=>{
+        if(bgChange)  BackgroundChange()
+      },[bgChange])
+
      useEffect(()=>{
         const start=id=>setPresenter(id)
         const stop=()=>setPresenter(null)
@@ -85,7 +122,7 @@ function Users({socket, fullscreen}) {
            port:import.meta.env.VITE_PEER_PORT,
            secure:import.meta.env.VITE_CONNECTION_SECURE==="true",//import.meta.env always return string not boolean or integer
         })
-
+      
       peer.on('open',async (id)=>{
           console.log(`My peer id is:${id}`);
           peerId.current=id
@@ -212,10 +249,10 @@ function Users({socket, fullscreen}) {
     let others=
                 presenter===peerId.current?remoteStreams:remoteStreams.filter(s=>s.id!==presenter)
     const isPresentationMode=presenter!==null
+
     return (
         <div className="relative w-full h-full flex flex-col ">
 
-        {/* Cursor dots (kept as-is) */}
         {Object.entries(cursors).map(([id, pos]) => (
             <div
                 key={id}
@@ -243,7 +280,7 @@ function Users({socket, fullscreen}) {
         </div>
        {isPresentationMode?(
            <div>
-                <div className='col-span-full h-[75vh]'>
+                <div className='col-span-full h-[75vh]'> 
                      <VideoStream  stream={presenterStream} name="Host" isPresentationMode={isPresentationMode}/>
                  </div>
                  <div className="flex gap-2 overflow-x-auto">
@@ -263,14 +300,34 @@ function Users({socket, fullscreen}) {
                               className="mt-3 flex-1 min-h-0 grid gap-2 auto-rows-fr overflow-y-auto pr-1"
                                style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
                              >
-                             <MyVideoTile  stream={mystream} shareScreen={shareScreen}/>
-                                 {remoteStreams.map((obj)=>(
-                                     <VideoStream name={user.name} stream={obj.stream}/>
-                                 ))}
+                            <div className="relative">
+                             <MyVideoTile
+                                stream={mystream}
+                                shareScreen={shareScreen}
+                                setBgBox={setBgBox}/>
+
+                             {bgBox && (
+                                <div className=' absolute bottom-20 left-1/2 -translate-x-1/2 z-9999 w-130 bg-black/80 backdrop-blur-lg rounded-2xl p-3 shadow-2xl'>
+                                 <Background
+                                     setBgChange={setBgChange}
+                                     backgroundId={backgroundId}
+                                     setBgBox={setBgBox}
+                                 />
+                                 </div>
+                                 )}
+                                </div>
+
+                             {remoteStreams.map((obj) => (
+                                 <VideoStream
+                                     key={obj.id}
+                                     name={user.name}
+                                     stream={obj.stream}
+                                 />
+                             ))}
                             </div>
                           ) : (
                            <div className="mt-3 flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto pr-1">
-                                <MyVideoTile stream={mystream} shrink shareScreen={shareScreen}/>
+                                <MyVideoTile stream={mystream} shrink shareScreen={shareScreen} setBgBox={setBgBox}/>
                 
                                 {remoteStreams.map((obj)=>(
                                     <div key={obj.id} className="shrink-0">

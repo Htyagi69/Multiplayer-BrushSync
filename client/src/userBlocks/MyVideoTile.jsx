@@ -1,13 +1,14 @@
 import { useRef,useState,useEffect } from "react";
-import { VideoOff,Video,Mic,Minimize,Maximize,ScreenShare,X } from "lucide-react";
+import { VideoOff,Video,Mic,Minimize,Maximize,ScreenShare,X ,UserSquare } from "lucide-react";
 
-export function MyVideoTile({ stream, shrink , shareScreen}) {
+export function MyVideoTile({ stream, shrink , shareScreen,setBgBox}) {
     const videoRef = useRef();
     const containerRef = useRef();
     const [videoOn, setVideoOn] = useState(true);
     const [audioOn, setAudioOn] = useState(true);
     const [closed, setClosed] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    
     // Re-attach the stream to the video element whenever it changes
     useEffect(() => {
         if (videoRef.current) videoRef.current.srcObject = stream;
@@ -29,6 +30,9 @@ export function MyVideoTile({ stream, shrink , shareScreen}) {
         stream?.getAudioTracks().forEach(track => { track.enabled = !track.enabled; });
         setAudioOn(prev => !prev);
     };
+    const toggleBackground = () => {
+        setBgBox(prev=>!prev)
+    }; 
 
     const handleClose = () => {
         stream?.getTracks().forEach(track => track.stop());
@@ -42,7 +46,7 @@ export function MyVideoTile({ stream, shrink , shareScreen}) {
             document.exitFullscreen?.();
         }
     };
-
+   
     return (
        <div
     ref={containerRef}
@@ -74,6 +78,9 @@ export function MyVideoTile({ stream, shrink , shareScreen}) {
                     </button>
                     <button onClick={toggleVideo} className="text-white hover:text-amber-300">
                         {videoOn ? <Video size={14} /> : <VideoOff size={14} />}
+                    </button>
+                    <button onClick={toggleBackground} className="text-white hover:text-amber-300">
+                        <UserSquare size={14} />
                     </button>
                     <button onClick={toggleFullscreen} className="text-white hover:text-amber-300">
                         {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
