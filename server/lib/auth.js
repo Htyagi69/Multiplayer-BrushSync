@@ -24,15 +24,10 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
-      partitioned: true,
     },
     crossSubdomainCookies: {
       enabled: false,
     },
     useSecureCookies: true,
   },
-   account: {
-    // Keep this to fix the state_mismatch across different domains
-    skipStateCookieCheck: true, 
-  }
 });
