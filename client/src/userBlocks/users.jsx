@@ -174,7 +174,7 @@ function Users({socket, fullscreen}) {
             socket.off('user-disconnected') 
             socket.off('user-mouse-moved'); 
         }
-    },[roomid,name])
+    },[roomid])
 
     useEffect(()=>{
         function handleMouseMove(e){
