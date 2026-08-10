@@ -1,7 +1,7 @@
 import { useRef,useState,useEffect } from "react";
-import { VideoOff,Video,Mic,Minimize,Maximize,ScreenShare,X ,UserSquare } from "lucide-react";
+import { VideoOff,Video,Mic,MicOff,Minimize,Maximize,ScreenShare,X ,UserSquare } from "lucide-react";
 
-export function MyVideoTile({ stream, shrink , shareScreen,setBgBox}) {
+export function MyVideoTile({ stream, shrink , shareScreen,setBgBox,bgChange,setBgChange}) {
     const videoRef = useRef();
     const containerRef = useRef();
     const [videoOn, setVideoOn] = useState(true);
@@ -31,7 +31,8 @@ export function MyVideoTile({ stream, shrink , shareScreen,setBgBox}) {
         setAudioOn(prev => !prev);
     };
     const toggleBackground = () => {
-        setBgBox(prev=>!prev)
+        if(!bgChange) setBgBox(prev=>!prev)
+        else setBgChange(prev=>!prev)
     }; 
 
     const handleClose = () => {

@@ -103,6 +103,7 @@ console.log("Image in VBArray",backgroundImage.current);
     
 
     let running = true;
+    let timeoutId = null;
 
 //Background Image
 
@@ -116,6 +117,8 @@ console.log("Image in VBArray",backgroundImage.current);
     // ============================================
     // PROCESS FRAME
     // ============================================
+const smallMaskCanvas = document.createElement("canvas");
+const smallMaskCtx = smallMaskCanvas.getContext("2d");
 
 function processFrame() {
     if (!running) return;
@@ -132,10 +135,10 @@ function processFrame() {
         const confidenceMask =
             result.confidenceMasks?.[0];
 
-       if (!confidenceMask) {
-    setTimeout(processFrame, 33);
-    return;
-}
+        if (!confidenceMask) {
+            timeoutId = setTimeout(processFrame, 33);
+            return;
+        }
 
         // ==========================================
         // 1. GET MEDIAPIPE MASK
@@ -156,15 +159,9 @@ function processFrame() {
         //    AT MEDIAPIPE'S ORIGINAL SIZE
         // ==========================================
 
-        const smallMaskCanvas =
-            document.createElement("canvas");
 
         smallMaskCanvas.width = maskWidth;
         smallMaskCanvas.height = maskHeight;
-
-        const smallMaskCtx =
-            smallMaskCanvas.getContext("2d");
-
 
         const imageData =
             smallMaskCtx.createImageData(
@@ -324,8 +321,9 @@ ctx.restore();
             canvas.height
         );
     }
-
-setTimeout(processFrame, 33);
+ if (running) {
+        timeoutId = setTimeout(processFrame, 33);
+    }
 }
 
 
@@ -364,17 +362,21 @@ setTimeout(processFrame, 33);
     // CLEANUP
     // ============================================
 
-    processedStream.stopProcessing = () => {
+processedStream.stopProcessing = () => {
+    running = false;
 
-        running = false;
+    if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+    }
 
-        mediapipe.close();
+    video.pause();
+    video.srcObject = null;
 
-        video.pause();
-
-        video.srcObject = null;
-    };
-
+    processedStream
+        .getVideoTracks()
+        .forEach(track => track.stop());
+};
 
     return processedStream;
 }

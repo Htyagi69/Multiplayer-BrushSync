@@ -85,6 +85,9 @@ function Users({socket, fullscreen}) {
         }
         console.log("Image",backgroundId.current);
         
+       if (currentStreamRef.current?.stopProcessing) {
+        currentStreamRef.current.stopProcessing();}
+
         const processStream=await createBackgroundStream(camera,backgroundId);
         currentStreamRef.current = processStream;
         setmyStream(processStream)
@@ -99,9 +102,41 @@ function Users({socket, fullscreen}) {
             sender?.replaceTrack(screenTrack)
         })
      }
+
+     const RemoveBackgroundChange=async()=>{
+
+       const camera= cameraStreamRef.current;
+           if (!camera) {
+        console.log("Camera stream is not ready");
+        return;
+        };  
+    const current = currentStreamRef.current;
+
+    if (current?.stopProcessing) {
+        console.log("Stopping virtual background...");
+        current.stopProcessing();
+    }
+        currentStreamRef.current = camera;
+        setmyStream(camera)
+        const cameraTrack = camera.getVideoTracks()[0];
+
+    if (!cameraTrack) {
+        console.log("Camera video track is not ready");
+        return;
+    }
+        Object.values(peers.current).forEach((call)=>{
+            if(!call.peerConnection){
+                console.log("peerConnection is not Ready");
+                return;
+            }
+            const sender=call.peerConnection.getSenders().find((s)=>s.track?.kind==="video");
+            sender?.replaceTrack(cameraTrack)
+        })
+     }
      
     useEffect(()=>{
         if(bgChange)  BackgroundChange()
+        else RemoveBackgroundChange()
       },[bgChange])
 
      useEffect(()=>{
@@ -304,7 +339,10 @@ function Users({socket, fullscreen}) {
                              <MyVideoTile
                                 stream={mystream}
                                 shareScreen={shareScreen}
-                                setBgBox={setBgBox}/>
+                                setBgBox={setBgBox}
+                                bgChange={bgChange}
+                                setBgChange={setBgChange}
+                                />
 
                              {bgBox && (
                                 <div className=' absolute bottom-20 left-1/2 -translate-x-1/2 z-9999 w-130 bg-black/80 backdrop-blur-lg rounded-2xl p-3 shadow-2xl'>
@@ -327,7 +365,7 @@ function Users({socket, fullscreen}) {
                             </div>
                           ) : (
                            <div className="mt-3 flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto pr-1">
-                                <MyVideoTile stream={mystream} shrink shareScreen={shareScreen} setBgBox={setBgBox}/>
+                                <MyVideoTile stream={mystream} shrink shareScreen={shareScreen} setBgBox={setBgBox}   bgChange={bgChange} setBgChange={setBgChange}/>
                 
                                 {remoteStreams.map((obj)=>(
                                     <div key={obj.id} className="shrink-0">
