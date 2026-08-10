@@ -58,8 +58,8 @@ function App() {
   <Toaster richColors closeButton/>
      <Routes>
        <Route path='/auth' element={<AuthPages/>}/>
-       <Route path='/'  element={session?<Dashboard/>:<Navigate to="/auth"/>}/>
-       <Route path='/:roomid' element={session?<Dashboard/>:<Navigate to="/auth"/>}/>
+       <Route path='/'  element={session?<Dashboard/>:<Navigate to="/auth" />}/>
+       <Route path='/:roomid' element={session?<Dashboard/>:<Navigate to="/auth" state={{from:window.location.pathname}} replace/>}/>
      </Routes>
   </BrowserRouter>
   )

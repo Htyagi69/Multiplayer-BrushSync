@@ -3,7 +3,7 @@ import {BrandLogo,InputField,EyeIcon,GoogleIcon} from './Icons'
 import { authClient } from '../lib/auth-client';
 import { toast } from 'sonner';
 
-const LoginPage = ({ onSwitch }) => {
+const LoginPage = ({ onSwitch,from,navigate }) => {
   const [showPw, setShowPw] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [remember, setRemember] = useState(false);
@@ -13,7 +13,7 @@ const LoginPage = ({ onSwitch }) => {
     const { data, error } = await authClient.signIn.email({
         email:form.email,
         password:form.password,
-       callbackURL: import.meta.env.VITE_CLIENT_URL, // A URL to redirect to after the user verifies their email (optional)
+        callbackURL: `${import.meta.env.VITE_CLIENT_URL}${from}`, // A URL to redirect to after the user verifies their email (optional)
         /**
          * remember the user session after the browser is closed. 
          * @default true
@@ -21,8 +21,8 @@ const LoginPage = ({ onSwitch }) => {
         rememberMe: false
 },{
      onSuccess: () => {
-            toast.success("Welcome!");
-            window.location.href = "/"; 
+            toast.success(`Welcome!:${from}`);
+            navigate(from)
         },
         onError: (ctx) => {
             toast.error(ctx.error.message || "Something went wrong");
@@ -33,7 +33,7 @@ const handleGoogleAuth=async()=>{
   try{
     await authClient.signIn.social({
     provider: "google",
-    callbackURL: import.meta.env.VITE_CLIENT_URL,
+    callbackURL:`${import.meta.env.VITE_CLIENT_URL}${from}`,
     errorCallbackURL: `${import.meta.env.VITE_CLIENT_URL}/error`,
     newUserCallbackURL: import.meta.env.VITE_CLIENT_URL,
 })

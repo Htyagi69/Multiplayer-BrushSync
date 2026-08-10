@@ -3,7 +3,7 @@ import {BrandLogo,InputField,EyeIcon,GoogleIcon} from './Icons'
 import {authClient} from '../lib/auth-client'
 import { toast } from 'sonner';
 
-const SignupPage = ({ onSwitch }) => {
+const SignupPage = ({ onSwitch,navigate,from }) => {
   const [showPw, setShowPw] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
 
@@ -14,13 +14,13 @@ const SignupPage = ({ onSwitch }) => {
           email:form.email, // user email address
           password:form.password, 
           name:form.name, // user display name
-          callbackURL: import.meta.env.VITE_CLIENT_URL // A URL to redirect to after the user verifies their email (optional)
+          callbackURL: `${import.meta.env.VITE_CLIENT_URL}${from}`, // A URL to redirect to after the user verifies their email (optional)
         }, {
         onRequest: (ctx) => {
             console.log("Loading",ctx);
         },
         onSuccess: async(ctx) => {
-            window.location.href='/';
+            navigate(from);
             toast.success("Welcome to BrushSync")
             console.log("Successfully done",ctx);
         },
@@ -36,7 +36,7 @@ const handleGoogleAuth=async()=>{
   try{
     await authClient.signIn.social({
     provider: "google",
-    callbackURL: import.meta.env.VITE_CLIENT_URL, 
+    callbackURL:`${import.meta.env.VITE_CLIENT_URL}${from}`, 
     errorCallbackURL: `${import.meta.env.VITE_CLIENT_URL}/error`,
     newUserCallbackURL: import.meta.env.VITE_CLIENT_URL,
 })
