@@ -47,8 +47,8 @@ const handleGoogleAuth=async()=>{
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-10 font-sans">
       <div className="w-full max-w-md bg-white rounded-2xl border border-stone-200 shadow-sm px-9 py-10 animate-[fadeUp_0.35s_ease_both]">
-        <BrandLogo />
-
+        {/* <BrandLogo /> */}
+         <img src="/brush.png" className='w-12' />
         <h1 className="text-2xl font-semibold text-gray-900 tracking-tight mb-1">Create your account</h1>
         <p className="text-sm text-gray-400 mb-7">Get started — it's completely free.</p>
 
