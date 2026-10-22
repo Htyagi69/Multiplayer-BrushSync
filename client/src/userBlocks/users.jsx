@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import {Peer} from 'peerjs'
 import VideoStream from './VideoStream';
 import { toast } from 'sonner';
+import { authClient } from '@/lib/auth-client';
 import { MyVideoTile } from './MyVideoTile';
 import { createBackgroundStream } from './virtualBackground';
 import Background from './background';
@@ -12,6 +13,8 @@ import { themeProvider } from '@/components/Context';
 
 function Users({socket, fullscreen}) {
     const {theme}=useContext(themeProvider)
+    const {data:session}=authClient.useSession();
+    const user=session?.user;
     const navigate=useNavigate()
     const {roomid}=useParams()
     // const socket=useMemo(()=>io('http://localhost:3000'),[]);
