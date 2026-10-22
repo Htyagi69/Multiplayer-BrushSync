@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { User, LogOut } from 'lucide-react'; // Assuming you use lucide-react for icons
 import { authClient } from '../lib/auth-client';
 import { toast } from 'sonner';
+import { themeProvider } from './Context';
 
 export const UserProfile = ({ user}) => {
+  const {theme}=useContext(themeProvider)
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
   
@@ -23,9 +25,8 @@ export const UserProfile = ({ user}) => {
   }
   return (
     <div className="relative">
-      {/* Trigger: The Profile Section */}
       <div 
-        className="text-black mt-2 flex items-center gap-2 cursor-pointer hover:opacity-80" 
+        className={`${theme?"text-black":"text-white"} mt-2 flex items-center gap-2 cursor-pointer hover:opacity-80`} 
         onClick={toggleDropdown}
       >
         {user.image ? (
@@ -36,12 +37,11 @@ export const UserProfile = ({ user}) => {
         <span className="font-medium">{user.name}</span>
       </div>
 
-      {/* The Logout Box (Dropdown) */}
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div className={`absolute left-0 mt-2 w-auto ${theme?"bg-white hover:bg-gray-900":"bg-black hover:bg-gray-100"} border border-gray-200 rounded-lg shadow-lg z-50`}>
           <ul className="py-1">
             <li 
-              className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 z-9999 text-sm text-red-600 cursor-pointer"
               onClick={() => {
                 onLogout();
                 setIsOpen(false);

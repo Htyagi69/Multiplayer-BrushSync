@@ -40,9 +40,6 @@ export async function createBackgroundStream(
     backgroundImage
 ) {
 
-    // ============================================
-    // VIDEO
-    // ============================================
 console.log("Image in VBArray",backgroundImage.current);
 
     const video = document.createElement("video");
@@ -54,21 +51,12 @@ console.log("Image in VBArray",backgroundImage.current);
     await video.play();
 
 
-    // ============================================
-    // MAIN CANVAS
-    // ============================================
-
     const canvas = document.createElement("canvas");
 
     canvas.width = 1280;
     canvas.height = 720;
 
     const ctx = canvas.getContext("2d");
-
-
-    // ============================================
-    // PERSON CANVAS
-    // ============================================
 
     const personCanvas = document.createElement("canvas");
 
@@ -77,10 +65,6 @@ console.log("Image in VBArray",backgroundImage.current);
 
     const personCtx = personCanvas.getContext("2d");
 
-
-    // ============================================
-    // MASK CANVAS
-    // ============================================
 
     const maskCanvas = document.createElement("canvas");
 
@@ -94,10 +78,6 @@ console.log("Image in VBArray",backgroundImage.current);
         }
     );
 
-
-    // ============================================
-    // MEDIAPIPE
-    // ============================================
     
     const mediapipe = await getSegmenter();
     
@@ -105,7 +85,6 @@ console.log("Image in VBArray",backgroundImage.current);
     let running = true;
     let timeoutId = null;
 
-//Background Image
 
     const bgImage=new Image();
     bgImage.src=backgroundImage.current
@@ -113,10 +92,6 @@ console.log("Image in VBArray",backgroundImage.current);
       bgImage.onload=resolve
       bgImage.onerror=reject
     })
-
-    // ============================================
-    // PROCESS FRAME
-    // ============================================
 const smallMaskCanvas = document.createElement("canvas");
 const smallMaskCtx = smallMaskCanvas.getContext("2d");
 
@@ -140,10 +115,6 @@ function processFrame() {
             return;
         }
 
-        // ==========================================
-        // 1. GET MEDIAPIPE MASK
-        // ==========================================
-
         const maskData =
             confidenceMask.getAsFloat32Array();
 
@@ -153,11 +124,6 @@ function processFrame() {
         const maskHeight =
             confidenceMask.height;
 
-
-        // ==========================================
-        // 2. CREATE TEMPORARY MASK CANVAS
-        //    AT MEDIAPIPE'S ORIGINAL SIZE
-        // ==========================================
 
 
         smallMaskCanvas.width = maskWidth;
@@ -169,10 +135,6 @@ function processFrame() {
                 maskHeight
             );
 
-
-        // ==========================================
-        // 3. FLOAT MASK -> ALPHA MASK
-        // ==========================================
 
         for (
             let i = 0;
@@ -200,11 +162,6 @@ function processFrame() {
             0
         );
 
-
-        // ==========================================
-        // 4. SCALE MASK TO FULL VIDEO SIZE
-        // ==========================================
-
         maskCtx.clearRect(
             0,
             0,
@@ -227,25 +184,12 @@ function processFrame() {
         );
 
 
-        // ==========================================
-        // 5. CLEAR FINAL CANVAS
-        // ==========================================
-
         ctx.clearRect(
             0,
             0,
             canvas.width,
             canvas.height
         );
-
-
-        // ==========================================
-        // 6. DRAW BLURRED CAMERA
-        // ==========================================
-
-// ==========================================
-// 6. DRAW BLACK BACKGROUND
-// ==========================================
 
 ctx.save();
 
@@ -260,11 +204,6 @@ ctx.drawImage(
   
 ctx.restore();
 
-
-        // ==========================================
-        // 7. DRAW ORIGINAL VIDEO
-        //    TO PERSON CANVAS
-        // ==========================================
 
         personCtx.clearRect(
             0,
@@ -285,10 +224,6 @@ ctx.restore();
         );
 
 
-        // ==========================================
-        // 8. APPLY PERSON MASK
-        // ==========================================
-
         personCtx.globalCompositeOperation =
             "destination-in";
 
@@ -301,17 +236,11 @@ ctx.restore();
         );
 
 
-        // ==========================================
-        // 9. RESET
-        // ==========================================
 
         personCtx.globalCompositeOperation =
             "source-over";
 
 
-        // ==========================================
-        // 10. PUT PERSON OVER BLURRED BACKGROUND
-        // ==========================================
 
         ctx.drawImage(
             personCanvas,
@@ -326,25 +255,13 @@ ctx.restore();
     }
 }
 
-
-    // ============================================
-    // START
-    // ============================================
-
     processFrame();
 
 
-    // ============================================
-    // CANVAS -> MEDIA STREAM
-    // ============================================
 
     const processedStream =
         canvas.captureStream(30);
 
-
-    // ============================================
-    // KEEP MICROPHONE
-    // ============================================
 
     const audioTrack =
         cameraStream.getAudioTracks()[0];
@@ -357,10 +274,6 @@ ctx.restore();
         );
     }
 
-
-    // ============================================
-    // CLEANUP
-    // ============================================
 
 processedStream.stopProcessing = () => {
     running = false;

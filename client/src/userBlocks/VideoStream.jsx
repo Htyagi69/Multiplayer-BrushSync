@@ -53,9 +53,8 @@ function VideoStream({name, stream, onClose ,isPresentationMode}) {
             : 'w-full aspect-video'
     }`}
 >
-    {/* video */}
     <video
-        ref={VideoRef} // or videoRef for MyVideoTile
+        ref={VideoRef} //  videoRef for MyVideoTile
         autoPlay
         // style={{ transform: 'scaleX(-1)' }} 
         className={isFullscreen ? 'w-full h-full object-contain' : 'w-full h-full object-cover'}

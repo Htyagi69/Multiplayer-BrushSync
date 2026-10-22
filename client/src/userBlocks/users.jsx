@@ -1,19 +1,17 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRef } from 'react';
 import {Peer} from 'peerjs'
 import VideoStream from './VideoStream';
-import { authClient } from '../lib/auth-client';
-import { UserProfile } from '../components/logout';
 import { toast } from 'sonner';
 import { MyVideoTile } from './MyVideoTile';
 import { createBackgroundStream } from './virtualBackground';
 import Background from './background';
+import { themeProvider } from '@/components/Context';
 
 
 function Users({socket, fullscreen}) {
-    const {data:session}=authClient.useSession();
-    const user=session?.user;
+    const {theme}=useContext(themeProvider)
     const navigate=useNavigate()
     const {roomid}=useParams()
     // const socket=useMemo(()=>io('http://localhost:3000'),[]);
@@ -21,7 +19,6 @@ function Users({socket, fullscreen}) {
     const [presenter,setPresenter]=useState(null)
     const [mystream,setmyStream]=useState(null)
     const [cursors, setCursors] = useState({}); // { userId: {x, y} }
-    // State to keep track of all remote streams
     const [remoteStreams,setRemoteStreams]=useState([]);
     const [state,setState]=useState(false);
     const [bgChange,setBgChange]=useState(false)
@@ -31,7 +28,6 @@ function Users({socket, fullscreen}) {
     
     const BASE_LINK=import.meta.env.VITE_CLIENT_URL
 
-    // We use a ref for the peer instance so it persists across renders correctly
      const peers=useRef({})
      const peerId=useRef(null)
      const cameraStreamRef=useRef(null)
@@ -163,7 +159,6 @@ function Users({socket, fullscreen}) {
           peerId.current=id
 
           if(roomid){
-              //take the localstream
            const camera = await navigator.mediaDevices.getUserMedia({
                   video:true,
                   audio:true,
@@ -171,7 +166,6 @@ function Users({socket, fullscreen}) {
                 cameraStreamRef.current=camera
                 currentStreamRef.current=camera
                 setmyStream(currentStreamRef.current)
-                //then we answer the call by sending our stream first and collectiong the remotestreams
                 peer.on('call',call=>{
                     call.answer(currentStreamRef.current);
                     call.on('stream',remotestream=>{
@@ -279,14 +273,12 @@ function Users({socket, fullscreen}) {
         return 5;
     }, [totalTiles]);
 
-    let presenterStream=
-                         presenter==peerId.current?mystream : remoteStreams.find(s=>s.id===presenter)?.stream
-    let others=
-                presenter===peerId.current?remoteStreams:remoteStreams.filter(s=>s.id!==presenter)
+    let presenterStream= presenter==peerId.current?mystream : remoteStreams.find(s=>s.id===presenter)?.stream
+    let others=presenter===peerId.current?remoteStreams:remoteStreams.filter(s=>s.id!==presenter)
     const isPresentationMode=presenter!==null
 
     return (
-        <div className="relative w-full h-full flex flex-col ">
+        <div className={`relative w-full h-full flex flex-col ${theme?"":"bg-zinc-950 text-white"}`}>
 
         {Object.entries(cursors).map(([id, pos]) => (
             <div
@@ -299,19 +291,29 @@ function Users({socket, fullscreen}) {
                     height: '10px',
                     backgroundColor: 'red',
                     borderRadius: '50%',
-                    pointerEvents: 'none', // Important: don't block clicks
+                    pointerEvents: 'none', 
                     zIndex: 100,
-                    transition: 'all 0.1s ease-out' // Makes the movement smooth
+                    transition: 'all 0.1s ease-out'
                 }}
             />
         ))}
 
-        <div className='flex gap-2 justify-between items-center shrink-0'>
-            <button onClick={roomCreation} className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-xs font-semibold shadow-sm transition-colors">
+        <div className='flex gap-2 justify-between items-center shrink-0 m-2'>
+            {roomid ? (
+                <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-white/90 backdrop-blur px-3 py-1.5 shadow-md border border-slate-200 pointer-events-none max-w-[90%]">
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-medium text-slate-600 shrink-0">
+                        Room
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-slate-800 truncate">
+                        {roomid}
+                    </span>
+                </div>
+         ):(
+             <button onClick={roomCreation} className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-xs font-semibold shadow-sm transition-colors">
                 {state ? `Invite your friends` : `Create and Join Room`}
             </button>
-
-           <UserProfile user={user}/>
+            )}
         </div>
        {isPresentationMode?(
            <div>
@@ -372,9 +374,7 @@ function Users({socket, fullscreen}) {
                                         <VideoStream name={user.name} stream={obj.stream}/>
                                     </div>
                                 )) }
-                          </div>
-        )
- )}
+                          </div> ))}
     </div>
     )
 }

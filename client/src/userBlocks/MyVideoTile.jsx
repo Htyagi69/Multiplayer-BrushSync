@@ -9,12 +9,10 @@ export function MyVideoTile({ stream, shrink , shareScreen,setBgBox,bgChange,set
     const [closed, setClosed] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     
-    // Re-attach the stream to the video element whenever it changes
     useEffect(() => {
         if (videoRef.current) videoRef.current.srcObject = stream;
     }, [stream]);
 
-    // Keep state in sync if user exits fullscreen via Esc
     useEffect(() => {
         const handleChange = () => setIsFullscreen(!!document.fullscreenElement && document.fullscreenElement === containerRef.current);
         document.addEventListener('fullscreenchange', handleChange);
@@ -49,9 +47,7 @@ export function MyVideoTile({ stream, shrink , shareScreen,setBgBox,bgChange,set
     };
    
     return (
-       <div
-    ref={containerRef}
-    className={`relative rounded-xl overflow-hidden bg-slate-800 shadow-sm ${
+       <div ref={containerRef} className={`relative rounded-xl overflow-hidden bg-slate-800 shadow-sm ${
         isFullscreen
             ? 'fixed inset-0 w-screen h-screen flex items-center justify-center bg-black rounded-none z-99999'
             : 'w-full aspect-video'
