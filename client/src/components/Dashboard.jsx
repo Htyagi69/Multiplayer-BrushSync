@@ -64,11 +64,11 @@ const handleMount = (editor) => {
               function handleMouseMove(e){
                   const x=e.clientX/window.innerWidth;
                   const y=e.clientY/window.innerHeight;
-                  socket.emit('mouse-move',{x,y,roomId:roomid});
+                  socket.emit('mouse-move',{x,y,roomId:roomid,name:user?.name});
               }
               window.addEventListener('mousemove',handleMouseMove);
               return ()=>window.removeEventListener('mousemove',handleMouseMove)
-          },[socket,roomid])
+          },[socket,roomid,user?.name])
 
            useEffect(() => {
               socket.on('user-mouse-moved', (data) => {
