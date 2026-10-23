@@ -12,7 +12,7 @@ import { themeProvider } from '@/components/Context';
 
 
 function Users({socket, fullscreen}) {
-    const {theme}=useContext(themeProvider)
+    const {theme,whiteboardOpen}=useContext(themeProvider)
     const {data:session}=authClient.useSession();
     const user=session?.user;
     const navigate=useNavigate()
@@ -194,6 +194,14 @@ function Users({socket, fullscreen}) {
         }
     })
 
+    peer.on("error", (err) => {
+  console.error("PeerJS error:", err.type, err.message);
+});
+
+peer.on("disconnected", () => {
+  console.error("PeerJS disconnected from server");
+});
+
         socket.on('user-disconnected',(userId)=>{
             console.log(`${userId} leaves the room`);
             if(peers.current[userId]) peers.current[userId].close();
@@ -281,7 +289,7 @@ function Users({socket, fullscreen}) {
     const isPresentationMode=presenter!==null
 
     return (
-        <div className={`relative w-full h-full flex flex-col ${theme?"":"bg-zinc-950 text-white"}`}>
+        <div className={`relative w-full h-full flex flex-col p-1  overflow-y-auto overflow-x-hidden overscroll-contain ${theme?"":"bg-zinc-950 text-white"}`}>
 
         {Object.entries(cursors).map(([id, pos]) => (
             <div
@@ -303,7 +311,7 @@ function Users({socket, fullscreen}) {
 
         <div className='flex gap-2 justify-between items-center shrink-0 m-2'>
             {roomid ? (
-                <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-white/90 backdrop-blur px-3 py-1.5 shadow-md border border-slate-200 pointer-events-none max-w-[90%]">
+                <div className="absolute mt-2 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-white/90 backdrop-blur px-3 py-1.5 shadow-md border border-slate-200 pointer-events-none max-w-[90%]">
                     <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-xs font-medium text-slate-600 shrink-0">
                         Room
@@ -335,50 +343,70 @@ function Users({socket, fullscreen}) {
             </div>
          </div>
              ):(
-                  fullscreen ? (
-                           <div
-                              className="mt-3 flex-1 min-h-0 grid gap-2 auto-rows-fr overflow-y-auto pr-1"
-                               style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
-                             >
-                            <div className="relative">
-                             <MyVideoTile
-                                stream={mystream}
-                                shareScreen={shareScreen}
-                                setBgBox={setBgBox}
-                                bgChange={bgChange}
-                                setBgChange={setBgChange}
-                                />
-
-                             {bgBox && (
-                                <div className=' absolute bottom-20 left-1/2 -translate-x-1/2 z-9999 w-130 bg-black/80 backdrop-blur-lg rounded-2xl p-3 shadow-2xl'>
-                                 <Background
-                                     setBgChange={setBgChange}
-                                     backgroundId={backgroundId}
-                                     setBgBox={setBgBox}
-                                 />
-                                 </div>
-                                 )}
-                                </div>
-
-                             {remoteStreams.map((obj) => (
-                                 <VideoStream
-                                     key={obj.id}
-                                     name={user.name}
-                                     stream={obj.stream}
-                                 />
-                             ))}
-                            </div>
-                          ) : (
-                           <div className="mt-3 flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto pr-1">
-                                <MyVideoTile stream={mystream} shrink shareScreen={shareScreen} setBgBox={setBgBox}   bgChange={bgChange} setBgChange={setBgChange}/>
+                fullscreen ? (
+                  <div
+                    className="mt-5 flex-1 min-h-0 grid gap-2 auto-rows-fr overflow-y-auto pr-1"
+                    style={{gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,}}>
+                    <div className="relative min-w-0">
+                      <MyVideoTile
+                        stream={mystream}
+                        shareScreen={shareScreen}
+                        setBgBox={setBgBox}
+                        bgChange={bgChange}
+                        setBgChange={setBgChange}
+                      />
+                    </div>
                 
-                                {remoteStreams.map((obj)=>(
-                                    <div key={obj.id} className="shrink-0">
-                                        <VideoStream name={user.name} stream={obj.stream}/>
-                                    </div>
-                                )) }
-                          </div> ))}
-    </div>
+                    {remoteStreams.map((obj) => (
+                      <div key={obj.id} className="min-w-0">
+                        <VideoStream
+                          name={user?.name || "Participant"}
+                          stream={obj.stream}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-3 flex-1 min-h-0 flex flex-col gap-3 overflow-y-auto pr-1 no-scrollbar">
+                    <div className="w-full shrink-0">
+                      <MyVideoTile
+                        stream={mystream}
+                        shrink
+                        shareScreen={shareScreen}
+                        setBgBox={setBgBox}
+                        bgChange={bgChange}
+                        setBgChange={setBgChange}
+                      />
+                    </div>
+                
+                    {remoteStreams.map((obj) => (
+                      <div key={obj.id} className="w-full shrink-0">
+                        <VideoStream
+                          name={user?.name || "Participant"}
+                          stream={obj.stream}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )
+                )}
+                     {bgBox && (
+                       <div
+                         className={`fixed left-1/2 -translate-x-1/2 bottom-24 z-9999
+                            overflow-y-auto overflow-x-hidden overscroll-contain
+                           rounded-2xl bg-transparent p-3 shadow-2xl backdrop-blur-lg
+                           transition-all duration-300 no-scrollbar
+                           ${whiteboardOpen ? "w-[min(18rem,calc(100vw-2rem))] h-48" : "w-[min(32rem,calc(100vw-2rem))] h-40"}`}
+                       >
+                         <Background
+                           setBgChange={setBgChange}
+                           backgroundId={backgroundId}
+                           setBgBox={setBgBox}
+                         />
+                       </div>
+                     )}
+                     
+                         </div>
     )
 }
 

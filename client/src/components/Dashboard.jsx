@@ -199,7 +199,7 @@ if (!whiteboardOpen && !sidebarOpen) {
             </div>
 
             <div
-                className={`h-full bg-white/95 backdrop-blur border-l border-slate-200 shadow-xl flex flex-col z-10000 transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`h-full bg-white/95 backdrop-blur border-l border-slate-200 shadow-xl flex flex-col z-10000 transition-all duration-300 ease-in-out overflow-hidden  ${
                     sidebarOpen ? (whiteboardOpen ? 'w-80' : 'w-full') : 'w-0'} ${theme?"text-black":"bg-zinc-950 text-white"}`}
             >
                 <div className={`h-full flex flex-col ${whiteboardOpen ? 'w-80' : 'w-full'}`}>
@@ -211,7 +211,7 @@ if (!whiteboardOpen && !sidebarOpen) {
                          </div>
                     </div>
 
-                    <div className={`flex-1 overflow-y-auto p-4  ${whiteboardOpen ? '' : 'max-w-3xl mx-auto w-full'}`}>
+                    <div className={`flex-1 overflow-y-auto p-4 ${whiteboardOpen ? '' : 'max-w-3xl mx-auto w-full'}`}>
                         <Users socket={socket} fullscreen={!whiteboardOpen} />
                     </div>
                 </div>
