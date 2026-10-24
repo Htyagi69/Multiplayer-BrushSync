@@ -28,6 +28,18 @@ function Dashboard(){
 const [pos, setPos] = useState({ x: 78, y: 67 }); // top-left corner, in pixels
 const [dragging, setDragging] = useState(false);
 
+const [isMobile, setIsMobile] = useState(
+    () => window.matchMedia('(max-width: 640px)').matches
+);
+
+useEffect(() => {
+    const media = window.matchMedia('(max-width: 640px)');
+    const update = () => setIsMobile(media.matches);
+
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+}, []);
+
 useEffect(() => {
     if (!dragging) return;
     const move = (e) => setPos({ x: e.clientX - 60, y: e.clientY - 20 });
@@ -194,7 +206,7 @@ if (!whiteboardOpen && !sidebarOpen) {
                         })}
                     </div>
 
-                    <Tldraw licenseKey={import.meta.env.VITE_TLDRAW_LICENSE_KEY} onMount={handleMount} autoFocus />
+                    <Tldraw licenseKey={import.meta.env.VITE_TLDRAW_LICENSE_KEY} onMount={handleMount} autoFocus     forceMobile={isMobile}/>
                 </div>
             </div>
 
