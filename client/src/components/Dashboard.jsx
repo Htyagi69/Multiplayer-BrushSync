@@ -177,7 +177,7 @@ if (!whiteboardOpen && !sidebarOpen) {
             <div
                 className={`h-full relative z-0 overflow-hidden transition-all duration-300 ease-in-out ${
                     whiteboardOpen ? 'flex-1 min-w-0' : 'w-0 flex-none'}`}>
-                <div className="h-67 w-full min-w-[320px] relative" style={{touchAction:'none',overscrollBehavior:"contain"}}>
+                <div className="h-140 w-full min-w-[320px] relative" style={{touchAction:'none',overscrollBehavior:"contain"}}>
                     <div className="absolute inset-0 z-9999 pointer-events-none overflow-hidden">
                         {Object.entries(cursors).map(([id, pos]) => {
                             const color = colorForId(id);
